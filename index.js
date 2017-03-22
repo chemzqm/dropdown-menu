@@ -20,11 +20,14 @@ function dropdown(el, pos, offset) {
   this.pos = pos || 'br-tr'
   this.el = el
   this.offset = offset || {y: 8}
-  event.bind(el, 'click', this.onTriggerClick.bind(this))
-  delegate.bind(target, 'li', 'click', this.onTargetClick.bind(this))
-  document.addEventListener('click', function () {
+  this._onTriggerClick = this.onTriggerClick.bind(this)
+  this._onTargetClick = this.onTargetClick.bind(this)
+  event.bind(el, 'click', this._onTriggerClick)
+  delegate.bind(target, 'li', 'click', this._onTargetClick)
+  this._onClick = function () {
     classes(target).add('hide')
-  })
+  }
+  document.addEventListener('click', this._onClick)
 }
 
 Emitter(dropdown.prototype)
@@ -55,6 +58,12 @@ dropdown.prototype.onTargetClick = function (e) {
 
 dropdown.prototype.hide = function () {
   classes(this.target).add('hide')
+}
+
+dropdown.prototype.unbind = function () {
+  document.removeEventListener('click', this._onClick)
+  event.unbind(this.el, 'click', this._onTriggerClick)
+  delegate.unbind(this.target, 'li', 'click', this._onTargetClick)
 }
 
 module.exports = dropdown
