@@ -61,9 +61,9 @@ dropdown.prototype.hide = function () {
 }
 
 dropdown.prototype.unbind = function () {
-  document.removeEventListener('click', this._onClick)
+  document.removeEventListener('click', this._onClick, false)
   event.unbind(this.el, 'click', this._onTriggerClick)
-  delegate.unbind(this.target, 'li', 'click', this._onTargetClick)
+  delegate.unbind(this.target, 'click', this._onTargetClick, false)
 }
 
 module.exports = dropdown
